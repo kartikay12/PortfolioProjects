@@ -178,8 +178,8 @@ JOIN
 WHERE 
     death.continent IS NOT NULL 
 
-	SELECT *
-	FROM PercentPopulationVaccinated 
+SELECT *
+FROM PercentPopulationVaccinated 
 
 
 
