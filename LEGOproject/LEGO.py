@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
-#Paste these lines seprately and run on seprately your jupyter
+#Paste these lines seprately and run  seprately your jupyter
 
 
 df =pd.read_csv("data\colors.csv")
