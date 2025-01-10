@@ -1,37 +1,34 @@
 import json
+import os
 import random
 import string
 
 USER_FILE = "Users_Details.json"
 TRANSACTION_FILE = "Transactions_Details.json"
 
-if not USER_FILE:
+if not os.path.exists(USER_FILE):
     with open(USER_FILE, 'w') as f:
         json.dump({}, f)
 
-if not TRANSACTION_FILE:
+if not os.path.exists(TRANSACTION_FILE):
     with open(TRANSACTION_FILE, 'w') as f:
         json.dump({}, f)
 
 def load_data(file_path):
-
     with open(file_path, 'r') as f:
         return json.load(f)
 
 def save_data(file_path, data):
-
     with open(file_path, 'w') as f:
         json.dump(data, f, indent=4)
 
 def generate_random_password(length=8):
-    """ Generating the random Password """
+    """Generate a random password."""
     characters = string.ascii_letters + string.digits + string.punctuation
     return ''.join(random.choice(characters) for _ in range(length))
 
-
-# User management
 def create_account():
-    """Creating an account """
+    """Create a user account."""
     users = load_data(USER_FILE)
     username = input("Enter a username: ").strip()
     if username in users:
@@ -59,7 +56,7 @@ def create_account():
     print("Account created successfully!")
 
 def login():
-
+    """User login."""
     users = load_data(USER_FILE)
     username = input("Enter your username: ").strip()
     if username not in users:
@@ -75,7 +72,7 @@ def login():
         return None
 
 def change_password(username):
-    """ For changing the password if any user want to change it """
+    """Change user password."""
     users = load_data(USER_FILE)
     current_password = input("Enter your current password: ").strip()
     if users[username]["password"] != current_password:
@@ -99,9 +96,8 @@ def change_password(username):
     save_data(USER_FILE, users)
     print("Password changed successfully!")
 
-# Banking operations
 def deposit(username):
-    """ Using it for depositing money """
+    """Deposit money."""
     users = load_data(USER_FILE)
     amount = float(input("Enter amount to deposit: "))
     if amount <= 0:
@@ -114,7 +110,7 @@ def deposit(username):
     print(f"Deposited {amount}. New balance: {users[username]['balance']}")
 
 def withdraw(username):
-    """Withdraw money from the account."""
+    """Withdraw money."""
     users = load_data(USER_FILE)
     amount = float(input("Enter amount to withdraw: "))
     if amount <= 0:
@@ -131,13 +127,12 @@ def withdraw(username):
     print(f"Withdrew {amount}. New balance: {users[username]['balance']}")
 
 def check_balance(username):
-    """Check the user's  balance."""
+    """Check user balance."""
     users = load_data(USER_FILE)
     print(f"Your balance is: {users[username]['balance']}")
 
-# Transaction logging
 def log_transaction(username, transaction_type, amount):
-    """For recording transaction"""
+    """Log a transaction."""
     transactions = load_data(TRANSACTION_FILE)
     if username not in transactions:
         transactions[username] = []
@@ -149,7 +144,7 @@ def log_transaction(username, transaction_type, amount):
     save_data(TRANSACTION_FILE, transactions)
 
 def view_transactions(username):
-    """ For viewing the transaction """
+    """View transaction history."""
     transactions = load_data(TRANSACTION_FILE)
     if username not in transactions or not transactions[username]:
         print("No transactions found.")
@@ -158,8 +153,8 @@ def view_transactions(username):
     for i, txn in enumerate(transactions[username], start=1):
         print(f"{i}. {txn['type']}: {txn['amount']}")
 
-# Main menu
 def main():
+    """Main menu of the program."""
     while True:
         print("\n--- Banking System ---")
         print("1. Create Account")
