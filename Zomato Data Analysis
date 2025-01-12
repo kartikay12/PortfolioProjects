@@ -1,0 +1,60 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+dataframe = pd.read_csv("Zomato data.csv")
+print(dataframe.head())
+def handleRate(value):
+	value=str(value).split('/')
+	value=value[0];
+	return float(value)
+
+dataframe['rate']=dataframe['rate'].apply(handleRate)
+print(dataframe.head())
+
+dataframe.info()
+
+sns.countplot(x=dataframe['listed_in(type)'])
+plt.xlabel('Type of resturnet')
+**The majority of the restaurants fall into the dining category.**
+
+grouped_data = dataframe.groupby('listed_in(type)')['votes'].sum()
+result =  pd.DataFrame({'votes':grouped_data})
+plt.plot(result,c= 'orange', marker = 'o')
+plt.xlabel("Type of resturant",c= 'Green',size=20)
+plt.ylabel("Votes",c= 'Green',size = 20)
+**Dining restaurants are preferred by a larger number**
+max_votes = dataframe['votes'].max()
+restaurant_with_max_votes = dataframe.loc[dataframe['votes'] == max_votes, 'name']
+
+print("Restaurant(s) with the maximum votes:")
+print(restaurant_with_max_votes)
+
+sns.countplot(x='online_order', hue='online_order', data=dataframe, 
+              palette=['blue', 'orange'], legend=False)
+**This suggests that a majority of the restaurants do not accept online orders.**
+plt.hist(dataframe['rate'],bins=5,color='cyan')
+plt.title("Ratings Distribution")
+plt.show()
+**The majority of restaurants received ratings ranging from 3.5 to 4.**
+
+couple_data = dataframe['approx_cost(for two people)']
+unique_categories = couple_data.unique()
+palette = sns.color_palette("viridis", len(unique_categories))
+
+sns.countplot(x=couple_data, hue=couple_data, palette=palette, legend=False)
+
+
+plt.xlabel("Approx Cost (for two people)", size=12)
+plt.ylabel("Count", size=12)
+plt.title("Count of Approx Cost Categories", size=14)
+plt.xticks(rotation=45, ha='right')  
+plt.tight_layout()  
+plt.figure(figsize = (6,6))
+sns.boxplot(x = 'online_order', y = 'rate', data = dataframe)
+
+pivot_table = dataframe.pivot_table(index='listed_in(type)', columns='online_order', aggfunc='size', fill_value=0)
+sns.heatmap(pivot_table, annot=True, cmap="YlGnBu", fmt='d')
+plt.title("Heatmap")
+plt.xlabel("Online Order")
+plt.ylabel("Listed In (Type)")
+plt.show()
